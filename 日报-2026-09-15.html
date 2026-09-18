@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>营养餐数据日报 · 2026-09-15</title><style>
+:root{ --f: system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+.viz-root{
+  color-scheme: light;
+  --surface-1:#fcfcfb; --page:#f9f9f7;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a;
+  --good:#0ca30c; --critical:#d03b3b; --warning:#fab219;
+  --success-text:#006300;
+  --dim:#c3c2b7;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])) .viz-root{
+    color-scheme: dark;
+    --surface-1:#1a1a19; --page:#0d0d0d;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+    --good:#0ca30c; --critical:#d03b3b; --warning:#fab219;
+    --success-text:#0ca30c;
+    --dim:#52514e;
+  }
+}
+:root[data-theme="dark"] .viz-root{
+  color-scheme: dark;
+  --surface-1:#1a1a19; --page:#0d0d0d;
+  --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+  --good:#0ca30c; --critical:#d03b3b; --warning:#fab219;
+  --success-text:#0ca30c;
+  --dim:#52514e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--page);color:var(--text-primary);font-family:var(--f);
+  font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.page{max-width:1080px;margin:0 auto;padding:28px 20px 64px}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+h1{font-size:21px;font-weight:640;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--text-secondary);font-size:13px;margin:0}
+.ghost{background:none;border:1px solid var(--border);color:var(--text-secondary);
+  border-radius:8px;padding:6px 12px;font:inherit;font-size:12px;cursor:pointer}
+.ghost:hover{color:var(--text-primary)}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;
+  padding:20px 20px 14px;margin-bottom:16px}
+.card>h2{font-size:14px;font-weight:620;margin:0 0 2px}
+.card>.cap{color:var(--muted);font-size:12px;margin:0 0 12px}
+.hero{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.hero .fig{font-size:52px;font-weight:660;letter-spacing:-.025em;line-height:1.05}
+.hero .lab{color:var(--text-secondary);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:16px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.tile .k{color:var(--text-secondary);font-size:12.5px;margin-bottom:6px}
+.tile .v{font-size:27px;font-weight:640;letter-spacing:-.02em;line-height:1.15}
+.tile .d{font-size:12px;margin-top:7px;color:var(--muted)}
+.up{color:var(--success-text)} .down{color:var(--critical)} .flat{color:var(--muted)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:2px 0 10px;font-size:12.5px;color:var(--text-secondary)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.legend .lnk{display:inline-block;width:14px;height:2px;border-radius:2px;margin-right:6px;vertical-align:3px}
+svg.chart{display:block;width:100%;height:auto;overflow:visible}
+.grid{stroke:var(--grid);stroke-width:1;shape-rendering:crispEdges}
+.ax{stroke:var(--axis);stroke-width:1;shape-rendering:crispEdges}
+.tk,.lb{fill:var(--muted);font-size:11.5px;font-family:var(--f)}
+.tk{font-variant-numeric:tabular-nums}
+.ln{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ln-lit{stroke:var(--series-1)} .ln-dim{stroke:var(--dim)}
+.dot{stroke:var(--surface-1);stroke-width:2}
+.dot-lit{fill:var(--series-1)}
+.seg{stroke:none}
+.seg.s1{fill:var(--series-1)} .seg.s2{fill:var(--series-2)} .seg.s3{fill:var(--series-3)}
+.seg.good{fill:var(--good)} .seg.critical{fill:var(--critical)}
+.seg.bar{fill:var(--series-1)}
+.cross{stroke:var(--axis);stroke-width:1;pointer-events:none}
+.cross-dot{fill:var(--series-1);stroke:var(--surface-1);stroke-width:2;pointer-events:none}
+.hit{fill:transparent;cursor:crosshair}
+.col .seg{transition:opacity .12s} .col:hover .seg{opacity:.82}
+details{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+summary{cursor:pointer;color:var(--text-secondary);font-size:12.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--muted)}
+details[open] summary::before{content:"▾ "}
+table{border-collapse:collapse;width:100%;margin-top:10px;font-size:12.5px}
+th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+th{color:var(--muted);font-weight:500}
+.note{color:var(--text-secondary);font-size:12px;line-height:1.7;margin:2px 0 0}
+.note b{font-weight:620;color:var(--text-primary)}
+.tip{position:fixed;z-index:9;pointer-events:none;background:var(--surface-1);
+  border:1px solid var(--border);border-radius:9px;padding:8px 11px;font-size:12.5px;
+  box-shadow:0 6px 22px rgba(0,0,0,.13);color:var(--text-primary);white-space:nowrap}
+.tip .tt{color:var(--muted);font-size:11.5px;margin-bottom:3px}
+.tip b{font-weight:620}
+.pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);
+  border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--text-secondary)}
+.pill i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.foot{color:var(--muted);font-size:11.5px;margin-top:22px;line-height:1.7}
+</style></head>
+<body class="viz-root"><div class="page">
+  <div class="page-head">
+    <div><h1>营养餐数据日报 · 2026-09-15</h1><p class="sub">2026-09-15 周二 · 对比 昨日(2026-09-14) 与 上周周二(2026-09-08)</p></div>
+    <button class="ghost" id="theme">☾ 深色</button>
+  </div>
+  
+  <section class="card">
+    <div class="hero">
+      <div><div class="lab">平台成交额（GMV）· 2026-09-15 周二</div>
+      <div class="fig">¥23,496.19</div></div>
+      <div>
+        <span class="pill"><i style="background:var(--series-1)"></i>▲25.4% 环比昨日</span>
+        <span class="pill"><i style="background:var(--series-2)"></i>▼22.6% 同比上周周二</span>
+      </div>
+    </div>
+  </section>
+  <div class="kpis"><div class="tile"><div class="k">平台 GMV</div><div class="v">¥23,496.19</div><div class="d"><span class="up">▲ 25.4%</span> <span style="color:var(--muted)">vs 昨日</span><br><span class="down">▼ 22.6%</span> <span style="color:var(--muted)">vs 上周周二</span></div></div><div class="tile"><div class="k">订单数</div><div class="v">259 单</div><div class="d"><span class="down">▼ 33.9%</span> <span style="color:var(--muted)">vs 昨日</span><br><span class="down">▼ 21.8%</span> <span style="color:var(--muted)">vs 上周周二</span></div></div><div class="tile"><div class="k">客单价</div><div class="v">¥90.72</div><div class="d"><span class="up">▲ 89.8%</span> <span style="color:var(--muted)">vs 昨日</span><br><span class="down">▼ 1.1%</span> <span style="color:var(--muted)">vs 上周周二</span></div></div><div class="tile"><div class="k">下单用户</div><div class="v">241 人</div><div class="d"><span class="down">▼ 21.8%</span> <span style="color:var(--muted)">vs 昨日</span><br><span class="down">▼ 3.6%</span> <span style="color:var(--muted)">vs 上周周二</span></div></div></div>
+  <div class="kpis"><div class="tile"><div class="k">营养餐下单</div><div class="v">1 单</div><div class="d"><span class="down">▼ 66.7%</span> <span style="color:var(--muted)">vs 昨日</span></div></div><div class="tile"><div class="k">营养餐金额</div><div class="v">¥8.00</div><div class="d"><span class="down">▼ 91.6%</span> <span style="color:var(--muted)">vs 昨日</span></div></div><div class="tile"><div class="k">交易失败</div><div class="v">3 单</div><div class="d"><span class="up">▼ 80.0%</span> <span style="color:var(--muted)">vs 昨日</span></div></div><div class="tile"><div class="k">下单成功率</div><div class="v">25.0%</div><div class="d"><span class="flat">成功 / (成功+失败)</span></div></div></div>
+
+  <section class="card"><h2>平台 GMV · 近 14 天</h2><p class="cap">当日为实心高亮，前 13 天为背景参照</p><svg class="chart" viewBox="0 0 760 240" role="img" aria-label="近14天平台GMV趋势">
+    <g class="layer-grid"><line class="grid" x1="62" y1="206" x2="682" y2="206"/><text class="lb" x="52" y="210" text-anchor="end">0</text><line class="grid" x1="62" y1="159" x2="682" y2="159"/><text class="lb" x="52" y="163" text-anchor="end">2.0万</text><line class="grid" x1="62" y1="112" x2="682" y2="112"/><text class="lb" x="52" y="116" text-anchor="end">4.0万</text><line class="grid" x1="62" y1="65" x2="682" y2="65"/><text class="lb" x="52" y="69" text-anchor="end">6.0万</text><line class="grid" x1="62" y1="18" x2="682" y2="18"/><text class="lb" x="52" y="22" text-anchor="end">8.0万</text></g>
+    <line class="ax" x1="62" y1="206" x2="682" y2="206"/>
+    <path class="ln ln-dim" d="M62,165.74 L109.69,60.13 L157.38,148.59 L205.08,172.86 L252.77,184.75 L300.46,103.83 L348.15,134.61 L395.85,143.02 L443.54,148.71 L491.23,163.56 L538.92,155 L586.62,169.71 L634.31,161.96"/><path class="ln ln-lit" d="M634.31,161.96 L682,150.78"/><circle class="dot dot-lit" cx="682" cy="150.78" r="4"/><text class="lb end-lb" x="692" y="154.78">2.3万</text><text class="lb peak-lb" x="109.69" y="48.13" text-anchor="middle">峰值 6.2万</text><text class="lb" x="62" y="228" text-anchor="middle">09-02</text><text class="lb" x="157.38" y="228" text-anchor="middle">09-04</text><text class="lb" x="252.77" y="228" text-anchor="middle">09-06</text><text class="lb" x="348.15" y="228" text-anchor="middle">09-08</text><text class="lb" x="443.54" y="228" text-anchor="middle">09-10</text><text class="lb" x="538.92" y="228" text-anchor="middle">09-12</text><text class="lb" x="634.31" y="228" text-anchor="middle">09-14</text><text class="lb" x="682" y="228" text-anchor="middle">09-15</text>
+    <line class="cross" x1="0" y1="18" x2="0" y2="206" style="display:none"/>
+    <circle class="cross-dot" r="4.5" style="display:none"/>
+    <g class="hits" data-series="[{&quot;label&quot;:&quot;2026-09-02 周三&quot;,&quot;cx&quot;:62,&quot;cy&quot;:165.74,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥17,131.99&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;342 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;274 人&quot;}]},{&quot;label&quot;:&quot;2026-09-03 周四&quot;,&quot;cx&quot;:109.69,&quot;cy&quot;:60.13,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥62,073.92&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;356 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;275 人&quot;}]},{&quot;label&quot;:&quot;2026-09-04 周五&quot;,&quot;cx&quot;:157.38,&quot;cy&quot;:148.59,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥24,427.71&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;373 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;298 人&quot;}]},{&quot;label&quot;:&quot;2026-09-05 周六&quot;,&quot;cx&quot;:205.08,&quot;cy&quot;:172.86,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥14,104.19&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;211 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;183 人&quot;}]},{&quot;label&quot;:&quot;2026-09-06 周日&quot;,&quot;cx&quot;:252.77,&quot;cy&quot;:184.75,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥9,044.63&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;229 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;186 人&quot;}]},{&quot;label&quot;:&quot;2026-09-07 周一&quot;,&quot;cx&quot;:300.46,&quot;cy&quot;:103.83,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥43,475.01&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;386 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;303 人&quot;}]},{&quot;label&quot;:&quot;2026-09-08 周二&quot;,&quot;cx&quot;:348.15,&quot;cy&quot;:134.61,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥30,376.75&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;331 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;250 人&quot;}]},{&quot;label&quot;:&quot;2026-09-09 周三&quot;,&quot;cx&quot;:395.85,&quot;cy&quot;:143.02,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥26,797.92&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;387 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;286 人&quot;}]},{&quot;label&quot;:&quot;2026-09-10 周四&quot;,&quot;cx&quot;:443.54,&quot;cy&quot;:148.71,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥24,379.50&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;373 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;284 人&quot;}]},{&quot;label&quot;:&quot;2026-09-11 周五&quot;,&quot;cx&quot;:491.23,&quot;cy&quot;:163.56,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥18,060.68&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;342 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;248 人&quot;}]},{&quot;label&quot;:&quot;2026-09-12 周六&quot;,&quot;cx&quot;:538.92,&quot;cy&quot;:155,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥21,703.73&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;221 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;203 人&quot;}]},{&quot;label&quot;:&quot;2026-09-13 周日&quot;,&quot;cx&quot;:586.62,&quot;cy&quot;:169.71,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥15,444.14&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;186 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;175 人&quot;}]},{&quot;label&quot;:&quot;2026-09-14 周一&quot;,&quot;cx&quot;:634.31,&quot;cy&quot;:161.96,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥18,741.24&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;392 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;308 人&quot;}]},{&quot;label&quot;:&quot;2026-09-15 周二&quot;,&quot;cx&quot;:682,&quot;cy&quot;:150.78,&quot;lines&quot;:[{&quot;k&quot;:&quot;GMV&quot;,&quot;v&quot;:&quot;¥23,496.19&quot;},{&quot;k&quot;:&quot;订单&quot;,&quot;v&quot;:&quot;259 单&quot;},{&quot;k&quot;:&quot;用户&quot;,&quot;v&quot;:&quot;241 人&quot;}]}]" data-unit=""><rect class="hit" x="39.86" y="18" width="44.29" height="188" data-i="0"/><rect class="hit" x="87.55" y="18" width="44.29" height="188" data-i="1"/><rect class="hit" x="135.24" y="18" width="44.29" height="188" data-i="2"/><rect class="hit" x="182.93" y="18" width="44.29" height="188" data-i="3"/><rect class="hit" x="230.63" y="18" width="44.29" height="188" data-i="4"/><rect class="hit" x="278.32" y="18" width="44.29" height="188" data-i="5"/><rect class="hit" x="326.01" y="18" width="44.29" height="188" data-i="6"/><rect class="hit" x="373.7" y="18" width="44.29" height="188" data-i="7"/><rect class="hit" x="421.4" y="18" width="44.29" height="188" data-i="8"/><rect class="hit" x="469.09" y="18" width="44.29" height="188" data-i="9"/><rect class="hit" x="516.78" y="18" width="44.29" height="188" data-i="10"/><rect class="hit" x="564.47" y="18" width="44.29" height="188" data-i="11"/><rect class="hit" x="612.16" y="18" width="44.29" height="188" data-i="12"/><rect class="hit" x="659.86" y="18" width="44.29" height="188" data-i="13"/></g>
+  </svg><details><summary>数据表</summary><table><thead><tr><th>日期</th><th>星期</th><th>GMV</th><th>订单数</th><th>下单用户</th></tr></thead>
+    <tbody><tr><td>2026-09-15</td><td>周二</td><td>¥23,496.19</td><td>259</td><td>241</td></tr><tr><td>2026-09-14</td><td>周一</td><td>¥18,741.24</td><td>392</td><td>308</td></tr><tr><td>2026-09-13</td><td>周日</td><td>¥15,444.14</td><td>186</td><td>175</td></tr><tr><td>2026-09-12</td><td>周六</td><td>¥21,703.73</td><td>221</td><td>203</td></tr><tr><td>2026-09-11</td><td>周五</td><td>¥18,060.68</td><td>342</td><td>248</td></tr><tr><td>2026-09-10</td><td>周四</td><td>¥24,379.50</td><td>373</td><td>284</td></tr><tr><td>2026-09-09</td><td>周三</td><td>¥26,797.92</td><td>387</td><td>286</td></tr><tr><td>2026-09-08</td><td>周二</td><td>¥30,376.75</td><td>331</td><td>250</td></tr><tr><td>2026-09-07</td><td>周一</td><td>¥43,475.01</td><td>386</td><td>303</td></tr><tr><td>2026-09-06</td><td>周日</td><td>¥9,044.63</td><td>229</td><td>186</td></tr><tr><td>2026-09-05</td><td>周六</td><td>¥14,104.19</td><td>211</td><td>183</td></tr><tr><td>2026-09-04</td><td>周五</td><td>¥24,427.71</td><td>373</td><td>298</td></tr><tr><td>2026-09-03</td><td>周四</td><td>¥62,073.92</td><td>356</td><td>275</td></tr><tr><td>2026-09-02</td><td>周三</td><td>¥17,131.99</td><td>342</td><td>274</td></tr></tbody></table></details></section>
+
+  <section class="card"><h2>营养餐下单 · 2026-09-15</h2><p class="cap">某营养餐供应商（shopId 61）· 按下单时间统计当天提交的订单，覆盖 早餐/午餐/晚餐</p><div class="legend">
+    <span><i style="background:var(--good)"></i>✔ 下单成功（非失败单）</span>
+    <span><i style="background:var(--critical)"></i>✕ 交易失败</span>
+  </div><svg class="chart" viewBox="0 0 760 230" role="img" aria-label="今日营养餐三餐下单">
+    <g class="layer-grid"><line class="grid" x1="62" y1="194" x2="742" y2="194"/><text class="lb" x="52" y="198" text-anchor="end">0 单</text><line class="grid" x1="62" y1="151" x2="742" y2="151"/><text class="lb" x="52" y="155" text-anchor="end">1 单</text><line class="grid" x1="62" y1="108" x2="742" y2="108"/><text class="lb" x="52" y="112" text-anchor="end">2 单</text><line class="grid" x1="62" y1="65" x2="742" y2="65"/><text class="lb" x="52" y="69" text-anchor="end">3 单</text><line class="grid" x1="62" y1="22" x2="742" y2="22"/><text class="lb" x="52" y="26" text-anchor="end">4 单</text></g>
+    <line class="ax" x1="62" y1="194" x2="742" y2="194"/>
+    <g class="col" data-i="0"><path class="seg good" d="M163.33,151 h24 v41 h-24 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;2026-09-15 早餐 · 下单成功&lt;/div&gt;&lt;div&gt;下单 &lt;b&gt;1&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;金额 &lt;b&gt;¥8.00&lt;/b&gt;&lt;/div&gt;"/><path class="seg critical" d="M163.33,151 V26 Q163.33,22 167.33,22 H183.33 Q187.33,22 187.33,26 V151 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;2026-09-15 早餐 · 交易失败&lt;/div&gt;&lt;div&gt;失败 &lt;b&gt;3&lt;/b&gt; 单&lt;/div&gt;"/><text class="lb cap-lb" x="175.33" y="14" text-anchor="middle">4 单</text>
+      <text class="lb" x="175.33" y="217" text-anchor="middle">早餐</text></g><g class="col" data-i="1">
+      <text class="lb" x="402" y="217" text-anchor="middle">午餐</text></g><g class="col" data-i="2">
+      <text class="lb" x="628.67" y="217" text-anchor="middle">晚餐</text></g>
+  </svg><details><summary>数据表</summary><table><thead><tr><th>餐次</th><th>下单成功</th><th>交易失败</th><th>金额</th></tr></thead>
+    <tbody><tr><td>早餐</td><td>1 单</td><td>3 单</td><td>¥8.00</td></tr><tr><td>午餐</td><td>0 单</td><td>0 单</td><td>¥0.00</td></tr><tr><td>晚餐</td><td>0 单</td><td>0 单</td><td>¥0.00</td></tr><tr><td><b>合计</b></td><td><b>1 单</b></td><td><b>3 单</b></td><td><b>¥8.00</b></td></tr></tbody></table></details></section>
+
+  <section class="card"><h2>营养餐预订用餐日 · 2026-09-15</h2><p class="cap">当天提交的营养餐订单所覆盖的用餐日期，共 1 个日期、4 单（其中 4 单为未来用餐日）</p><svg class="chart" viewBox="0 0 760 46" role="img" aria-label="当日下单覆盖的用餐日期">
+    <line class="ax" x1="210" y1="8" x2="210" y2="38"/>
+    <g class="row">
+      <text class="lb bar-lb" x="198" y="27" text-anchor="end">2026-09-16</text>
+      <path class="seg bar" d="M210,14 h454 q4,0 4,4 v10 q0,4 -4,4 h-454 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;用餐日 2026-09-16 周三&lt;/div&gt;&lt;div&gt;下单 &lt;b&gt;4&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;下单成功 &lt;b&gt;1&lt;/b&gt; 单 · 失败 &lt;b&gt;3&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;金额 &lt;b&gt;¥8.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="678" y="27">4 单</text>
+    </g>
+  </svg><details><summary>数据表</summary><table><thead><tr><th>用餐日期</th><th>星期</th><th>下单单数</th><th>下单成功</th><th>交易失败</th><th>金额</th></tr></thead>
+    <tbody><tr><td>2026-09-16</td><td>周三</td><td>4</td><td>1</td><td>3</td><td>¥8.00</td></tr></tbody></table></details></section>
+
+  <section class="card"><h2>营养餐菜品 · 2026-09-15</h2><p class="cap">仅统计当天提交且未失败（status≠6）的订单菜品</p><svg class="chart" viewBox="0 0 760 46" role="img" aria-label="今日营养餐菜品">
+    <line class="ax" x1="210" y1="8" x2="210" y2="38"/>
+    <g class="row">
+      <text class="lb bar-lb" x="198" y="27" text-anchor="end">低升糖膳食早餐</text>
+      <path class="seg bar" d="M210,14 h454 q4,0 4,4 v10 q0,4 -4,4 h-454 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;低升糖膳食早餐&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;1&lt;/b&gt; 份&lt;/div&gt;&lt;div&gt;金额 &lt;b&gt;¥8.00&lt;/b&gt;&lt;/div&gt;&lt;div&gt;规格 经典套餐&lt;/div&gt;"/>
+      <text class="lb val-lb" x="678" y="27">¥8.00</text>
+    </g>
+  </svg><details><summary>数据表</summary><table><thead><tr><th>菜品</th><th>销量</th><th>金额</th><th>规格</th></tr></thead>
+    <tbody><tr><td>低升糖膳食早餐</td><td>1 份</td><td>¥8.00</td><td>经典套餐</td></tr></tbody></table></details></section>
+
+  <section class="card"><h2>平台商户构成 · 2026-09-15</h2><p class="cap">按当日 GMV 排序</p><svg class="chart" viewBox="0 0 760 256" role="img" aria-label="当日商户GMV">
+    <line class="ax" x1="210" y1="8" x2="210" y2="248"/>
+    <g class="row">
+      <text class="lb bar-lb" x="198" y="27" text-anchor="end">医膳食品</text>
+      <path class="seg bar" d="M210,14 h454 q4,0 4,4 v10 q0,4 -4,4 h-454 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;医膳食品&lt;/div&gt;&lt;div&gt;订单 &lt;b&gt;22&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;GMV &lt;b&gt;¥18,652.00&lt;/b&gt;&lt;/div&gt;&lt;div&gt;用户 &lt;b&gt;22&lt;/b&gt; 人&lt;/div&gt;"/>
+      <text class="lb val-lb" x="678" y="27">¥18,652.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="57" text-anchor="end">鲜食坊</text>
+      <path class="seg bar" d="M210,44 h101.06 q4,0 4,4 v10 q0,4 -4,4 h-101.06 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;鲜食坊&lt;/div&gt;&lt;div&gt;订单 &lt;b&gt;215&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;GMV &lt;b&gt;¥4,278.39&lt;/b&gt;&lt;/div&gt;&lt;div&gt;用户 &lt;b&gt;198&lt;/b&gt; 人&lt;/div&gt;"/>
+      <text class="lb val-lb" x="325.0558985631568" y="57">¥4,278.39</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="87" text-anchor="end">精剪坊</text>
+      <path class="seg bar" d="M210,74 h0 q3.928801200943598,0 3.928801200943598,3.928801200943598 v10.14 q0,3.928801200943598 -3.928801200943598,3.928801200943598 h0 q-3.928801200943598,0 -3.928801200943598,-3.928801200943598 v-10.14 q0,-3.928801200943598 3.928801200943598,-3.928801200943598 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;精剪坊&lt;/div&gt;&lt;div&gt;订单 &lt;b&gt;8&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;GMV &lt;b&gt;¥160.00&lt;/b&gt;&lt;/div&gt;&lt;div&gt;用户 &lt;b&gt;8&lt;/b&gt; 人&lt;/div&gt;"/>
+      <text class="lb val-lb" x="223.9288012009436" y="87">¥160.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="117" text-anchor="end">文创坊</text>
+      <path class="seg bar" d="M210,104 h0 q3.4377010508256487,0 3.4377010508256487,3.4377010508256487 v11.12 q0,3.4377010508256487 -3.4377010508256487,3.4377010508256487 h0 q-3.4377010508256487,0 -3.4377010508256487,-3.4377010508256487 v-11.12 q0,-3.4377010508256487 3.4377010508256487,-3.4377010508256487 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;文创坊&lt;/div&gt;&lt;div&gt;订单 &lt;b&gt;1&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;GMV &lt;b&gt;¥140.00&lt;/b&gt;&lt;/div&gt;&lt;div&gt;用户 &lt;b&gt;1&lt;/b&gt; 人&lt;/div&gt;"/>
+      <text class="lb val-lb" x="223.43770105082564" y="117">¥140.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="147" text-anchor="end">洁衣坊</text>
+      <path class="seg bar" d="M210,134 h0 q3,0 3,3 v12 q0,3 -3,3 h0 q-3,0 -3,-3 v-12 q0,-3 3,-3 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;洁衣坊&lt;/div&gt;&lt;div&gt;订单 &lt;b&gt;5&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;GMV &lt;b&gt;¥100.80&lt;/b&gt;&lt;/div&gt;&lt;div&gt;用户 &lt;b&gt;5&lt;/b&gt; 人&lt;/div&gt;"/>
+      <text class="lb val-lb" x="223" y="147">¥100.80</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="177" text-anchor="end">爱车坊</text>
+      <path class="seg bar" d="M210,164 h0 q3,0 3,3 v12 q0,3 -3,3 h0 q-3,0 -3,-3 v-12 q0,-3 3,-3 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;爱车坊&lt;/div&gt;&lt;div&gt;订单 &lt;b&gt;3&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;GMV &lt;b&gt;¥77.00&lt;/b&gt;&lt;/div&gt;&lt;div&gt;用户 &lt;b&gt;3&lt;/b&gt; 人&lt;/div&gt;"/>
+      <text class="lb val-lb" x="223" y="177">¥77.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="207" text-anchor="end">鲜花坊</text>
+      <path class="seg bar" d="M210,194 h0 q3,0 3,3 v12 q0,3 -3,3 h0 q-3,0 -3,-3 v-12 q0,-3 3,-3 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;鲜花坊&lt;/div&gt;&lt;div&gt;订单 &lt;b&gt;1&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;GMV &lt;b&gt;¥52.00&lt;/b&gt;&lt;/div&gt;&lt;div&gt;用户 &lt;b&gt;1&lt;/b&gt; 人&lt;/div&gt;"/>
+      <text class="lb val-lb" x="223" y="207">¥52.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="237" text-anchor="end">某营养餐供应商</text>
+      <path class="seg bar" d="M210,224 h0 q3,0 3,3 v12 q0,3 -3,3 h0 q-3,0 -3,-3 v-12 q0,-3 3,-3 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;某营养餐供应商&lt;/div&gt;&lt;div&gt;订单 &lt;b&gt;4&lt;/b&gt; 单&lt;/div&gt;&lt;div&gt;GMV &lt;b&gt;¥36.00&lt;/b&gt;&lt;/div&gt;&lt;div&gt;用户 &lt;b&gt;3&lt;/b&gt; 人&lt;/div&gt;"/>
+      <text class="lb val-lb" x="223" y="237">¥36.00</text>
+    </g>
+  </svg><details><summary>数据表</summary><table><thead><tr><th>商户</th><th>订单数</th><th>GMV</th><th>下单用户</th></tr></thead>
+    <tbody><tr><td>医膳食品</td><td>22</td><td>¥18,652.00</td><td>22</td></tr><tr><td>鲜食坊</td><td>215</td><td>¥4,278.39</td><td>198</td></tr><tr><td>精剪坊</td><td>8</td><td>¥160.00</td><td>8</td></tr><tr><td>文创坊</td><td>1</td><td>¥140.00</td><td>1</td></tr><tr><td>洁衣坊</td><td>5</td><td>¥100.80</td><td>5</td></tr><tr><td>爱车坊</td><td>3</td><td>¥77.00</td><td>3</td></tr><tr><td>鲜花坊</td><td>1</td><td>¥52.00</td><td>1</td></tr><tr><td>某营养餐供应商</td><td>4</td><td>¥36.00</td><td>3</td></tr></tbody></table></details></section>
+
+  <section class="card"><h2>平台商品 TOP10 · 2026-09-15</h2><p class="cap">按当日销售额排序</p><svg class="chart" viewBox="0 0 760 316" role="img" aria-label="当日商品TOP10">
+    <line class="ax" x1="210" y1="8" x2="210" y2="308"/>
+    <g class="row">
+      <text class="lb bar-lb" x="198" y="27" text-anchor="end">浦索水解蛋白液</text>
+      <path class="seg bar" d="M210,14 h454 q4,0 4,4 v10 q0,4 -4,4 h-454 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;浦索水解蛋白液&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;11&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥4,345.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="678" y="27">¥4,345.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="57" text-anchor="end">宝源恒通乳酸菌</text>
+      <path class="seg bar" d="M210,44 h257.41 q4,0 4,4 v10 q0,4 -4,4 h-257.41 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;宝源恒通乳酸菌&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;8&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥2,480.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="481.41311852704257" y="57">¥2,480.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="87" text-anchor="end">禾升蛋白HMB水解蛋白液</text>
+      <path class="seg bar" d="M210,74 h238.44 q4,0 4,4 v10 q0,4 -4,4 h-238.44 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;禾升蛋白HMB水解蛋白液&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;4&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥2,300.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="462.43958573072496" y="87">¥2,300.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="117" text-anchor="end">易乐维复合蛋白奶昔VIP香草味</text>
+      <path class="seg bar" d="M210,104 h194.17 q4,0 4,4 v10 q0,4 -4,4 h-194.17 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;易乐维复合蛋白奶昔VIP香草味&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;4&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥1,880.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="418.16800920598394" y="117">¥1,880.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="147" text-anchor="end">久久畅即食型乳酸菌（1200亿）</text>
+      <path class="seg bar" d="M210,134 h154.11 q4,0 4,4 v10 q0,4 -4,4 h-154.11 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;久久畅即食型乳酸菌（1200亿）&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;5&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥1,500.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="378.1127733026467" y="147">¥1,500.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="177" text-anchor="end">诺伽特棒VIP巧克力味</text>
+      <path class="seg bar" d="M210,164 h144.63 q4,0 4,4 v10 q0,4 -4,4 h-144.63 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;诺伽特棒VIP巧克力味&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;3&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥1,410.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="368.6260069044879" y="177">¥1,410.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="207" text-anchor="end">仁元和蛋白固体饮料多维复合型</text>
+      <path class="seg bar" d="M210,194 h109.84 q4,0 4,4 v10 q0,4 -4,4 h-109.84 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;仁元和蛋白固体饮料多维复合型&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;3&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥1,080.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="333.8411967779057" y="207">¥1,080.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="237" text-anchor="end">力存匀浆膳(纤维型)蛋白固体饮料</text>
+      <path class="seg bar" d="M210,224 h109.84 q4,0 4,4 v10 q0,4 -4,4 h-109.84 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;力存匀浆膳(纤维型)蛋白固体饮料&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;9&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥1,080.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="333.8411967779057" y="237">¥1,080.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="267" text-anchor="end">诺伽特棒尊享蓝莓味</text>
+      <path class="seg bar" d="M210,254 h74.53 q4,0 4,4 v10 q0,4 -4,4 h-74.53 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;诺伽特棒尊享蓝莓味&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;1&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥745.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="298.52934407364785" y="267">¥745.00</text>
+    </g><g class="row">
+      <text class="lb bar-lb" x="198" y="297" text-anchor="end">蛋百乐乳清蛋白粉固体饮料</text>
+      <path class="seg bar" d="M210,284 h51.66 q4,0 4,4 v10 q0,4 -4,4 h-51.66 q-4,0 -4,-4 v-10 q0,-4 4,-4 Z" data-tip="&lt;div class=&quot;tt&quot;&gt;蛋百乐乳清蛋白粉固体饮料&lt;/div&gt;&lt;div&gt;商户 &lt;b&gt;医膳食品&lt;/b&gt;&lt;/div&gt;&lt;div&gt;销量 &lt;b&gt;1&lt;/b&gt; 件&lt;/div&gt;&lt;div&gt;销售额 &lt;b&gt;¥528.00&lt;/b&gt;&lt;/div&gt;"/>
+      <text class="lb val-lb" x="275.65569620253166" y="297">¥528.00</text>
+    </g>
+  </svg><details><summary>数据表</summary><table><thead><tr><th>商品</th><th>商户</th><th>销量</th><th>销售额</th></tr></thead>
+    <tbody><tr><td>浦索水解蛋白液</td><td>医膳食品</td><td>11 件</td><td>¥4,345.00</td></tr><tr><td>宝源恒通乳酸菌</td><td>医膳食品</td><td>8 件</td><td>¥2,480.00</td></tr><tr><td>禾升蛋白HMB水解蛋白液</td><td>医膳食品</td><td>4 件</td><td>¥2,300.00</td></tr><tr><td>易乐维复合蛋白奶昔VIP香草味</td><td>医膳食品</td><td>4 件</td><td>¥1,880.00</td></tr><tr><td>久久畅即食型乳酸菌（1200亿）</td><td>医膳食品</td><td>5 件</td><td>¥1,500.00</td></tr><tr><td>诺伽特棒VIP巧克力味</td><td>医膳食品</td><td>3 件</td><td>¥1,410.00</td></tr><tr><td>仁元和蛋白固体饮料多维复合型</td><td>医膳食品</td><td>3 件</td><td>¥1,080.00</td></tr><tr><td>力存匀浆膳(纤维型)蛋白固体饮料</td><td>医膳食品</td><td>9 件</td><td>¥1,080.00</td></tr><tr><td>诺伽特棒尊享蓝莓味</td><td>医膳食品</td><td>1 件</td><td>¥745.00</td></tr><tr><td>蛋百乐乳清蛋白粉固体饮料</td><td>医膳食品</td><td>1 件</td><td>¥528.00</td></tr></tbody></table></details></section>
+  
+  <p class="foot">口径：GMV = 有效订单实付合计（含未支付，已剔除删除单）；金额已由「分」换算为「元」。营养餐 = 某营养餐供应商（shopId 61），**按下单时间**统计当天提交的订单（营养餐普遍提前数天预订，故多数订单的用餐日在未来，见「预订用餐日」）；交易失败 = status 6，下单成功 = 非失败单，履约成功 = status 3。当日为快照，数据截至 2026-09-15 16:16（本地时间），越晚导出越接近全天。</p>
+</div><div class="tip" id="tip" hidden></div><script>
+(function(){
+  var tip = document.getElementById('tip');
+  function show(html, x, y){
+    tip.innerHTML = html; tip.hidden = false;
+    var r = tip.getBoundingClientRect();
+    var left = Math.min(x + 14, window.innerWidth - r.width - 12);
+    var top  = Math.max(y - r.height - 14, 8);
+    tip.style.left = left + 'px'; tip.style.top = top + 'px';
+  }
+  function hide(){ tip.hidden = true; }
+
+  // 线段：整列十字准星 + 最近点提示
+  document.querySelectorAll('svg.chart .hits').forEach(function(g){
+    var svg = g.closest('svg');
+    var cross = svg.querySelector('.cross');
+    var cdot  = svg.querySelector('.cross-dot');
+    var data  = JSON.parse(g.getAttribute('data-series') || '[]');
+    var unit  = g.getAttribute('data-unit') || '';
+    g.querySelectorAll('.hit').forEach(function(r){
+      r.addEventListener('mousemove', function(ev){
+        var i = +r.getAttribute('data-i'); var d = data[i]; if(!d) return;
+        var box = svg.getBoundingClientRect();
+        var vb = svg.viewBox.baseVal;
+        var px = box.left + (d.cx / vb.width) * box.width;
+        var py = box.top  + (d.cy / vb.height) * box.height;
+        cross.style.display = ''; cdot.style.display = '';
+        cross.setAttribute('x1', d.cx); cross.setAttribute('x2', d.cx);
+        cdot.setAttribute('cx', d.cx); cdot.setAttribute('cy', d.cy);
+        show('<div class="tt">' + d.label + '</div>' + d.lines.map(function(l){
+          return '<div>' + l.k + ' <b>' + l.v + '</b></div>'; }).join(''), px, py);
+      });
+      r.addEventListener('mouseleave', function(){
+        cross.style.display = 'none'; cdot.style.display = 'none'; hide();
+      });
+    });
+  });
+
+  // 柱 / 条：逐标记提示
+  document.querySelectorAll('[data-tip]').forEach(function(el){
+    el.addEventListener('mousemove', function(ev){ show(el.getAttribute('data-tip'), ev.clientX, ev.clientY); });
+    el.addEventListener('mouseleave', hide);
+  });
+  document.addEventListener('scroll', hide, true);
+
+  // 主题切换
+  var btn = document.getElementById('theme');
+  if (btn) btn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : cur === 'light' ? 'dark'
+      : (matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', next);
+    btn.textContent = next === 'dark' ? '☀ 浅色' : '☾ 深色';
+  });
+})();
+</script></body></html>
